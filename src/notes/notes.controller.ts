@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   ParseIntPipe,
   Patch,
@@ -8,7 +9,11 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import type { Request } from 'express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { NotesService } from './notes.service';
@@ -27,6 +32,27 @@ interface JwtUser {
 @ApiBearerAuth()
 export class NotesController {
   constructor(private readonly notesService: NotesService) {}
+
+  @Get()
+  @ApiOkResponse({ type: NoteResponseDto, isArray: true })
+  findAll(@Req() req: Request) {
+    const { sub } = req.user as JwtUser;
+    return this.notesService.findAll(sub);
+  }
+
+  @Get('favorites')
+  @ApiOkResponse({ type: NoteResponseDto, isArray: true })
+  findFavorites(@Req() req: Request) {
+    const { sub } = req.user as JwtUser;
+    return this.notesService.findFavorites(sub);
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: NoteResponseDto })
+  findOne(@Req() req: Request, @Param('id', ParseIntPipe) id: number) {
+    const { sub } = req.user as JwtUser;
+    return this.notesService.findOne(sub, id);
+  }
 
   @Post()
   @ApiCreatedResponse({ type: NoteResponseDto })
