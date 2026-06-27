@@ -40,6 +40,36 @@ export class NotesService {
     return plainToInstance(NoteResponseDto, note);
   }
 
+  async findAll(auth0Id: string): Promise<NoteResponseDto[]> {
+    const Notes = await this.prisma.note.findMany({
+      where: { user: { auth0Id } },
+      select: NOTE_SELECT,
+    });
+
+    return plainToInstance(NoteResponseDto, Notes);
+  }
+
+  async findFavorites(auth0Id: string): Promise<NoteResponseDto[]> {
+    const notes = await this.prisma.note.findMany({
+      where: { user: { auth0Id }, isFavorite: true },
+      select: NOTE_SELECT,
+    });
+
+    return plainToInstance(NoteResponseDto, notes);
+  }
+
+  async findOne(auth0Id: string, id: number): Promise<NoteResponseDto> {
+    const userId = await this.resolveUserId(auth0Id);
+
+    const note = await this.prisma.note.findFirst({
+      where: { id, userId },
+      select: NOTE_SELECT,
+    });
+    if (!note) throw new NotFoundException('Note not found');
+
+    return plainToInstance(NoteResponseDto, note);
+  }
+
   async update(
     auth0Id: string,
     id: number,
