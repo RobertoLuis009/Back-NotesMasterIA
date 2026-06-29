@@ -36,7 +36,8 @@ DATABASE_URL=postgresql://usuario:senha@localhost:5432/notesmaster
 
 # Auth0
 AUTH0_DOMAIN=seu-tenant.auth0.com
-AUTH0_CLIENT_ID=        # audience da API registrada no Auth0
+AUTH0_AUDIENCE=         # Identifier da API registrada no Auth0 (valida access tokens)
+AUTH0_CLIENT_ID=        # Client ID da aplicação (NÃO usar como audience da API)
 
 # CORS
 FRONTEND_URL=http://localhost:3000
