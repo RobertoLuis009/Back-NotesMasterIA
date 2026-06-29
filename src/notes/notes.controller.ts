@@ -6,6 +6,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -40,6 +41,13 @@ export class NotesController {
     return this.notesService.findAll(sub);
   }
 
+  @Get('recent')
+  @ApiOkResponse({ type: NoteResponseDto, isArray: true })
+  findRecent(@Req() req: Request) {
+    const { sub } = req.user as JwtUser;
+    return this.notesService.findRecent(sub);
+  }
+
   @Get('favorites')
   @ApiOkResponse({ type: NoteResponseDto, isArray: true })
   findFavorites(@Req() req: Request) {
@@ -47,11 +55,39 @@ export class NotesController {
     return this.notesService.findFavorites(sub);
   }
 
+  @Get('search')
+  @ApiOkResponse({ isArray: true })
+  search(@Req() req: Request, @Query('q') q: string) {
+    const { sub } = req.user as JwtUser;
+    return this.notesService.search(sub, q);
+  }
+
+  @Get('insights/connections')
+  @ApiOkResponse()
+  countConnections(@Req() req: Request) {
+    const { sub } = req.user as JwtUser;
+    return this.notesService.countConnections(sub);
+  }
+
+  @Get('insights/count')
+  @ApiOkResponse()
+  countNotes(@Req() req: Request) {
+    const { sub } = req.user as JwtUser;
+    return this.notesService.countNotes(sub);
+  }
+
   @Get(':id')
   @ApiOkResponse({ type: NoteResponseDto })
   findOne(@Req() req: Request, @Param('id', ParseIntPipe) id: number) {
     const { sub } = req.user as JwtUser;
     return this.notesService.findOne(sub, id);
+  }
+
+  @Get(':id/similar')
+  @ApiOkResponse({ isArray: true })
+  findSimilar(@Req() req: Request, @Param('id', ParseIntPipe) id: number) {
+    const { sub } = req.user as JwtUser;
+    return this.notesService.findSimilar(sub, id);
   }
 
   @Post()
