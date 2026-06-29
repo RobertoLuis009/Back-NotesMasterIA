@@ -21,4 +21,5 @@ COPY prisma ./prisma
 COPY prisma.config.ts ./
 
 EXPOSE 3001
-CMD ["node", "dist/main.js"]
+# Aplica as migracoes pendentes (inclui a extensao pgvector) e sobe a API.
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main.js"]
