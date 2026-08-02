@@ -77,6 +77,7 @@ export class NotesService {
   async findAll(auth0Id: string): Promise<NoteResponseDto[]> {
     const Notes = await this.prisma.note.findMany({
       where: { user: { auth0Id } },
+      orderBy: { updatedAt: 'desc' },
       select: NOTE_SELECT,
     });
 
