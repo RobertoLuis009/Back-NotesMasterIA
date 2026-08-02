@@ -69,7 +69,7 @@ export class NotesService {
       select: NOTE_SELECT,
     });
 
-    void this.saveEmbedding(note.id, note.title, note.content);
+    await this.saveEmbedding(note.id, note.title, note.content);
 
     return plainToInstance(NoteResponseDto, note);
   }
@@ -123,7 +123,7 @@ export class NotesService {
       select: NOTE_SELECT,
     });
 
-    void this.saveEmbedding(note.id, note.title, note.content);
+    await this.saveEmbedding(note.id, note.title, note.content);
 
     return plainToInstance(NoteResponseDto, note);
   }
